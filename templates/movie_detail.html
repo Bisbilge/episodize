@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie_info.title }} | Episodize</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #f5c518;
+            --bg-dark: #000000;
+            --glass: rgba(20, 20, 20, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background-image: url("{{ movie_info.poster|default:'' }}");
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.3);
+            z-index: -1;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .navbar { width: 100%; padding: 15px 0; z-index: 100; }
+        .nav-content { width: 90%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-link { 
+            color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; 
+            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); 
+            padding: 8px 16px; border-radius: 30px; backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.2); }
+        .brand-box { font-weight: 900; font-size: 1.3rem; color: var(--accent); text-decoration: none; letter-spacing: -1px; }
+
+        /* Loader */
+        #loader { text-align: center; margin: 120px auto; width: 90%; display: none; }
+        .spinner { font-size: 2.8rem; color: var(--accent); animation: spin 1s infinite linear; margin-bottom: 25px; }
+        .loading-text { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
+
+        .main-container { width: 92%; max-width: 1100px; margin: 10px auto 60px; z-index: 10; }
+        
+        /* Result Layout - Başlangıçta Görünmez */
+        .result-layout { 
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px; 
+            overflow: hidden; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); 
+            display: none; /* JS ile açılacak */
+            opacity: 0;    /* JS ile 1 yapılacak */
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .movie-header { padding: 40px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .header-left h1 { margin: 0; font-size: 3.2rem; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+        .meta-line { margin-top: 15px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .rating-badge { background: var(--accent); color: black; font-weight: 800; padding: 3px 8px; border-radius: 6px; font-size: 1rem; }
+
+        .content-body { display: flex; padding: 40px; gap: 50px; }
+        .poster-wrapper { width: 280px; flex-shrink: 0; }
+        .main-poster { width: 100%; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        
+        .info-wrapper { flex: 1; }
+        #movie-plot { font-size: 1.1rem; line-height: 1.6; color: #d1d1d1; margin: 0 0 40px 0; font-weight: 400; }
+
+        .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        .ep-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .ep-card { 
+            background-color: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px; padding: 15px 20px; display: flex; align-items: center; transition: 0.3s;
+        }
+        .ep-card:hover { background-color: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .ep-number-box { font-size: 1.1rem; font-weight: 800; color: var(--accent); width: 45px; }
+        .play-btn { 
+            width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); 
+            display: flex; justify-content: center; align-items: center; font-size: 0.8rem; transition: 0.2s;
+        }
+        .ep-card:hover .play-btn { background: var(--accent); color: black; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #error-area { background: rgba(220, 38, 38, 0.15); border: 1px solid #dc2626; color: #ffcccc; padding: 25px; margin: 30px auto; max-width: 800px; border-radius: 15px; display: none; text-align: center; backdrop-filter: blur(10px); }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 850px) { 
+            .content-body { flex-direction: column; padding: 30px 20px; gap: 30px; } 
+            .poster-wrapper { display: none; }
+            .movie-header { padding: 30px 20px; }
+            .header-left h1 { font-size: 2.2rem; letter-spacing: -1px; }
+            .meta-line { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body onload="initDetail()">
+
+    <div class="backdrop"></div>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="brand-box">Episodize</a>
+            <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> <span>Ana Sayfa</span></a>
+        </div>
+    </nav>
+
+    <input type="hidden" id="page-imdb-id" value="{{ imdb_id }}">
+    <input type="hidden" id="has-episodes" value="{% if movie.episode_data %}true{% else %}false{% endif %}">
+
+    <div class="main-container">
+        <div id="loader">
+            <i class="fa-solid fa-circle-notch spinner"></i>
+            <div class="loading-text" id="loading-msg">AI Analizi Hazırlanıyor...</div>
+        </div>
+
+        <div id="error-area"></div>
+
+        <div id="result-card" class="result-layout">
+            
+            <div class="movie-header">
+                <div class="header-left">
+                    <h1 id="movie-title">{{ movie_info.title }}</h1>
+                    <div class="meta-line">
+                        <span class="rating-badge">IMDb {{ movie_info.imdb_rating }}</span>
+                        <span>{{ movie_info.year }}</span>
+                        <span>•</span>
+                        <span>{{ movie_info.runtime }}</span>
+                        {% if movie_info.genre %}
+                        <span>•</span>
+                        <span style="color: var(--accent)">{{ movie_info.genre }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="poster-wrapper">
+                    <img id="poster-img" class="main-poster" src="{{ movie_info.poster|default:'https://via.placeholder.com/300x450' }}" alt="Poster">
+                </div>
+
+                <div class="info-wrapper">
+                    <h3 style="margin-top:0; color:var(--accent); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; font-weight: 700;">Hikaye Özeti</h3>
+                    <p id="movie-plot">{{ movie_info.plot }}</p>
+
+                    <div class="section-title">
+                        <i class="fa-solid fa-list-ol" style="color:var(--accent)"></i> Bölümler
+                    </div>
+                    
+                    <div id="ep-list" class="ep-list">
+                        {% if movie.episode_data %}
+                            {% for ep in movie.episode_data %}
+                            <div class="ep-card">
+                                <div class="ep-number-box">#{{ ep.episode }}</div>
+                                <div style="flex:1">
+                                    <div style="font-size:1rem; font-weight:600; margin-bottom: 2px;">{{ ep.title }}</div>
+                                    <div style="font-size:0.8rem; color:#888;">
+                                        <i class="fa-regular fa-clock"></i> {{ ep.start }} - {{ ep.end }}
+                                    </div>
+                                </div>
+                                <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loader = document.getElementById("loader");
+        const resultCard = document.getElementById("result-card");
+        const errorArea = document.getElementById("error-area");
+        const loadingMsg = document.getElementById("loading-msg");
+        
+        const imdbId = document.getElementById("page-imdb-id").value;
+        const hasEpisodes = document.getElementById("has-episodes").value === "true";
+
+        const loadingMessages = [
+            "AI Analizi Başlatılıyor...", "Sahneler taranıyor...", "Dramatik yapı çözümleniyor...", "Zaman çizelgesi oluşturuluyor..."
+        ];
+        let msgInterval;
+
+        function startLoadingAnim() {
+            let i = 0; 
+            loadingMsg.innerText = loadingMessages[0];
+            msgInterval = setInterval(() => { 
+                i = (i+1) % loadingMessages.length; 
+                loadingMsg.innerText = loadingMessages[i]; 
+            }, 2000);
+        }
+        
+        function stopLoadingAnim() { clearInterval(msgInterval); }
+
+        function showResult() {
+            loader.style.display = 'none';
+            resultCard.style.display = 'block';
+            // Opacity animasyonu için kısa bir delay
+            setTimeout(() => { resultCard.style.opacity = '1'; }, 50);
+        }
+
+        function initDetail() {
+            if (hasEpisodes) {
+                // Veri varsa direkt göster
+                showResult();
+            } else {
+                // Veri yoksa loader'ı aç ve analizi başlat
+                loader.style.display = 'block';
+                startLoadingAnim();
+                analyzeMovie(imdbId);
+            }
+        }
+
+        async function analyzeMovie(id) {
+            try {
+                const response = await fetch(`/analyze/?imdb_id=${encodeURIComponent(id)}`);
+                const data = await response.json();
+                stopLoadingAnim();
+
+                if (!response.ok || data.error) throw new Error(data.error || "Analiz başarısız oldu.");
+
+                const epList = document.getElementById('ep-list');
+                epList.innerHTML = '';
+                
+                data.episodes.forEach(ep => {
+                    const cleanTitle = ep.title.replace(/^(Bölüm|Episode)\s*\d+[:\.]?\s*/i, '');
+                    epList.innerHTML += `
+                        <div class="ep-card">
+                            <div class="ep-number-box">#${ep.episode}</div>
+                            <div style="flex:1">
+                                <div style="font-size:1rem; font-weight:600; margin-bottom: 2px;">${cleanTitle}</div>
+                                <div style="font-size:0.8rem; color:#888;">
+                                    <i class="fa-regular fa-clock"></i> ${ep.start} - ${ep.end}
+                                </div>
+                            </div>
+                            <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+                        </div>
+                    `;
+                });
+
+                showResult();
+
+            } catch (err) {
+                stopLoadingAnim();
+                loader.style.display = 'none';
+                errorArea.style.display = 'block';
+                errorArea.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="font-size:2rem; margin-bottom:15px; display:block;"></i><strong>Hata:</strong> ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -23,37 +23,49 @@ class AIService:
         return " ".join(clean_text.split())
 
     def split_movie_into_episodes(self, subtitle_text):
-        prompt = f"""
-        Analyze the following movie subtitles. This represents the FULL movie.
-        You MUST split the ENTIRE movie from start (00:00:00) to the very end timestamp into episodes.
-        Do NOT stop halfway. Cover the full duration.
+            prompt = f"""
+            You are an expert film editor and screenwriter. Your task is to transform a full-length movie into a "mini-series" format by splitting these subtitles into logical, narrative-driven episodes.
 
-        Split it into episodes of approximately 20-30 minutes.
-        Ensure each episode ends at a natural narrative pause (scene change, silence).
-        
-        RETURN ONLY A RAW JSON ARRAY. No markdown, no "json" tags.
-        Format:
-        [
-            {{"episode": 1, "start": "00:00:00", "end": "00:25:30", "title": "Episode Title"}},
-            ...
-            {{"episode": "N", "start": "...", "end": "CREDITS_START", "title": "Final Episode"}}
-        ]
+            CRITICAL GUIDELINES:
+            1. **Narrative Arc**: Do not just look at the clock. Each episode must feel like a complete chapter. Find natural breaking points such as:
+            - Major scene transitions or changes in location.
+            - Emotional shifts or the conclusion of a sub-plot.
+            - "Cliffhanger" moments that would make a viewer want to watch the next part.
+            
+            2. **Duration**: Aim for approximately 20-35 minutes per episode, but PRIORITIZE the story flow over exact timing. If a natural break happens at 18 minutes or 38 minutes, use that instead of forcing a break at 30.
 
-        Subtitles:
-        {subtitle_text} 
-        """
-        
-        try:
-            response = self.client.models.generate_content(
-                model=self.model_id,
-                contents=prompt
-            )
-            text_response = response.text
-            clean_json = re.sub(r'```json\s*|```', '', text_response).strip()
-            return json.loads(clean_json)
-        except Exception as e:
-            print(f"AI Error: {e}")
-            return [{"episode": 1, "title": f"Hata: {str(e)}", "start": "00:00", "end": "???"}]
+            3. **Full Coverage**: You MUST process the subtitles from the very first second (00:00:00) to the final timestamp (the end of the credits). 
+
+            4. **Titles**: Create a creative, thematic title for each episode based on the events occurring in that segment.
+
+            RETURN ONLY A RAW JSON ARRAY. No markdown, no "json" blocks, no conversational text.
+            
+            Format:
+            [
+                {{"episode": 1, "start": "00:00:00", "end": "HH:MM:SS", "title": "The Beginning of the End"}},
+                ...
+                {{"episode": N, "start": "HH:MM:SS", "end": "FINAL_TIMESTAMP", "title": "Final Resolution"}}
+            ]
+
+            Subtitles:
+            {subtitle_text} 
+            """
+            
+            try:
+                # Buradaki model ayarlarında temperature'ı biraz düşürmek (örn: 0.3) 
+                # JSON formatının bozulmamasını sağlar.
+                response = self.client.models.generate_content(
+                    model=self.model_id,
+                    contents=prompt
+                )
+                text_response = response.text
+                
+                # Markdown temizleme
+                clean_json = text_response.replace('```json', '').replace('```', '').strip()
+                return json.loads(clean_json)
+            except Exception as e:
+                print(f"AI Error: {e}")
+                return [{"episode": 1, "title": f"Hata: {str(e)}", "start": "00:00:00", "end": "???"}]
 
 class MovieInfoService:
     def __init__(self):

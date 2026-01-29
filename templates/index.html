@@ -3,435 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Episodize | Turn Movies into Series</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <title>Episodize | Discover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --brand-yellow: #f5c518; /* İkonik Sarı */
-            --bg-dark: #121212;       /* Derin Siyah */
-            --bg-card: #1f1f1f;       /* Kart Grisi */
-            --bg-hover: #2c2c2c;
+            --brand: #f5c518;
+            --bg-body: #121212;
+            --bg-card: #1a1a1a;
             --text-main: #ffffff;
             --text-muted: #b3b3b3;
-            --accent-blue: #5799ef;
         }
 
-        * { box-sizing: border-box; }
+        /* Özel Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand); }
 
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+        body { 
+            margin: 0; 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- NAVBAR --- */
-        .navbar {
+        /* Hero & Navbar Alanı */
+        .hero-section {
             width: 100%;
-            background-color: var(--bg-dark);
-            padding: 15px 0;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .brand-box {
-            background-color: var(--brand-yellow);
-            color: black;
-            font-weight: 900;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.2s;
-        }
-        
-        .brand-box:hover { transform: scale(1.05); }
-
-        /* --- ARAMA ALANI --- */
-        .search-container {
-            flex: 1;
+            background: radial-gradient(circle at 50% -20%, #2a2a2a 0%, var(--bg-body) 80%);
+            padding-bottom: 40px;
             position: relative;
-            max-width: 700px;
         }
 
-        .search-wrapper {
-            display: flex;
-            width: 100%;
-            box-shadow: 0 0 0 1px transparent;
-            border-radius: 4px;
-            transition: box-shadow 0.2s;
-        }
-
-        .search-wrapper:focus-within {
-            box-shadow: 0 0 0 2px var(--brand-yellow); /* Focus olunca sarı çerçeve */
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 15px;
-            border-radius: 4px 0 0 4px;
-            border: none;
-            font-size: 1rem;
-            outline: none;
-            font-family: 'Roboto', sans-serif;
-            background: white;
-            color: black;
-        }
-
-        .search-btn {
-            background-color: var(--brand-yellow);
-            color: black;
-            border: none;
-            padding: 0 25px;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: background 0.2s;
+        .navbar { 
+            width: 90%; max-width: 1400px; margin: 0 auto;
+            padding: 20px 0; 
+            display: flex; justify-content: space-between; align-items: center; 
         }
         
-        .search-btn:hover { background-color: #e2b616; }
-
-        /* Öneriler Kutusu */
-        .suggestions-box {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: var(--bg-card);
-            border: 1px solid #444;
-            border-top: none;
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
-            border-radius: 0 0 4px 4px;
-        }
-
-        .suggestion-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #333;
-            cursor: pointer;
-            transition: background 0.1s;
-        }
-        .suggestion-item:last-child { border-bottom: none; }
-        .suggestion-item:hover { background-color: var(--bg-hover); border-left: 4px solid var(--brand-yellow); }
-        
-        .sug-poster { width: 40px; height: 56px; object-fit: cover; margin-right: 15px; border-radius: 2px; }
-        .sug-title { color: white; font-weight: 500; font-size: 1rem; }
-        .sug-year { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
-
-        /* --- HERO SECTION (Boş Durum) --- */
-        #hero-section {
-            text-align: center;
-            margin-top: 100px;
-            animation: fadeIn 1s ease;
+        .brand-box { 
+            font-size: 1.5rem; font-weight: 800; color: var(--brand); 
+            text-decoration: none; display: flex; align-items: center; gap: 8px; 
+            letter-spacing: -1px; text-transform: uppercase;
         }
         
-        .hero-title { font-size: 3rem; font-weight: 300; margin-bottom: 20px; color: var(--text-main); }
-        .hero-subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
-        .hero-icon { font-size: 5rem; color: #333; margin-bottom: 30px; }
-
-        /* --- YÜKLENİYOR --- */
-        #loader {
-            display: none;
-            text-align: center;
-            margin-top: 80px;
-        }
-        .spinner {
-            font-size: 3rem;
-            color: var(--brand-yellow);
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        .loading-text { font-size: 1.2rem; font-weight: 300; color: var(--text-muted); }
-
-        /* --- HATA KUTUSU --- */
-        #error-area { 
-            background: rgba(220, 38, 38, 0.1); 
-            border-left: 5px solid #dc2626; 
-            color: #ffb3b3; 
-            padding: 20px; 
-            margin-top: 30px; 
-            border-radius: 4px; 
-            display: none; 
-            max-width: 800px;
+        .search-container { 
+            width: 90%; max-width: 800px; margin: 40px auto 0; 
+            position: relative; z-index: 10;
         }
 
-        /* --- SONUÇ KARTI --- */
-        .main-container { width: 90%; max-width: 1200px; padding-bottom: 60px; }
-
-        .result-layout {
-            display: none; /* JS ile açılır */
-            background-color: var(--bg-card);
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-top: 30px;
-            animation: slideUp 0.5s ease;
-        }
-
-        /* Üst Header */
-        .movie-header {
-            padding: 25px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0));
-            border-bottom: 1px solid #333;
-        }
-
-        .header-left h1 { margin: 0; font-size: 2.8rem; font-weight: 400; line-height: 1.1; }
-        .header-meta { color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; display: flex; gap: 15px; }
-        
-        .header-right { display: flex; flex-direction: column; align-items: flex-end; }
-        .rating-title { color: var(--text-muted); font-size: 0.75rem; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        .rating-box { display: flex; align-items: center; gap: 10px; }
-        .star-icon { color: var(--brand-yellow); font-size: 2rem; }
-        .rating-val { font-size: 1.8rem; font-weight: bold; color: white; }
-        .rating-max { color: var(--text-muted); font-size: 1.1rem; }
-
-        /* İçerik Gövdesi */
-        .content-body { display: flex; padding: 30px; gap: 40px; }
-
-        .poster-wrapper { flex-shrink: 0; width: 260px; position: relative; }
-        .main-poster { width: 100%; display: block; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* Şerit Etiketi */
-        .poster-ribbon {
-            position: absolute; top: -5px; left: 15px;
-            background: var(--bg-dark); /* Şeridin arkası */
-        }
-        .ribbon-content {
-            background-color: rgba(255, 255, 255, 0.1); /* Yarı saydam gri */
-            width: 34px; height: 45px;
-            display: flex; align-items: center; justify-content: center;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
-        }
-
-        .info-wrapper { flex: 1; }
-
-        .genre-chips { display: flex; gap: 10px; margin-bottom: 20px; }
-        .chip {
-            border: 1px solid #666; border-radius: 50px; padding: 6px 16px;
-            font-size: 0.9rem; color: white; transition: 0.2s; cursor: default;
-        }
-        .chip:hover { border-color: var(--brand-yellow); color: var(--brand-yellow); }
-
-        .plot { font-size: 1.1rem; line-height: 1.6; margin-bottom: 40px; color: #ddd; max-width: 800px; }
-
-        /* BÖLÜM LİSTESİ */
-        .episodes-section { margin-top: 10px; }
-        
-        .section-header {
-            display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
-        }
-        .yellow-bar { width: 4px; height: 28px; background-color: var(--brand-yellow); border-radius: 2px; }
-        .section-title { font-size: 1.8rem; font-weight: 500; color: white; }
-
-        .ep-list { display: flex; flex-direction: column; gap: 12px; }
-
-        .ep-card {
-            background-color: #262626;
-            border-radius: 4px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
+        .search-container h1 {
+            text-align: center; font-weight: 200; margin-bottom: 25px; 
+            font-size: 2.5rem; letter-spacing: -1px;
         }
         
-        .ep-card:hover { 
-            background-color: #333; 
-            border-color: #444;
-            transform: translateX(5px);
-        }
-
-        .ep-number-box {
-            background: transparent;
-            color: var(--text-muted);
-            width: 40px; 
-            font-weight: 300;
-            font-size: 1.5rem;
-            text-align: center;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-
-        .ep-info { flex: 1; }
-        .ep-title { font-size: 1.15rem; font-weight: 500; margin-bottom: 6px; color: white; }
-        .ep-time { 
-            font-size: 0.85rem; color: var(--text-muted); 
-            display: flex; align-items: center; gap: 6px; font-family: monospace; 
+        .search-wrapper { 
+            display: flex; background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px; overflow: hidden; 
+            transition: all 0.3s ease;
         }
         
-        .ep-action {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-left: 20px;
-            opacity: 0.5;
-            transition: 0.2s;
+        .search-wrapper:focus-within { 
+            background: rgba(0,0,0,0.5);
+            border-color: var(--brand);
+            box-shadow: 0 0 30px rgba(245, 197, 24, 0.15);
         }
-        .ep-card:hover .ep-action { opacity: 1; color: var(--brand-yellow); }
+        
+        .search-input { 
+            flex: 1; padding: 18px 20px; border: none; outline: none; 
+            background: transparent; font-size: 1.1rem; color: white; 
+            font-family: inherit; width: 100%;
+        }
+        .search-input::placeholder { color: #666; }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .content-body { flex-direction: column; }
-            .poster-wrapper { width: 100%; max-width: 200px; margin: 0 auto 20px auto; display: none; } /* Mobilde posteri gizleyebiliriz veya küçültebiliriz */
-            .movie-header { flex-direction: column; align-items: flex-start; gap: 20px; }
-            .header-right { align-items: flex-start; flex-direction: row; gap: 20px; }
+        /* Öneriler */
+        .suggestions-box { 
+            position: absolute; top: 110%; left: 0; width: 100%; 
+            background: #1f1f1f; border: 1px solid #333; z-index: 100; 
+            display: none; flex-direction: column; border-radius: 12px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow-y: auto;
+            max-height: 350px;
+        }
+        .suggestion-item { 
+            display: flex; align-items: center; padding: 12px 15px; 
+            border-bottom: 1px solid #2a2a2a; cursor: pointer; color: white; 
+            text-decoration: none; transition: background 0.2s; 
+        }
+        .suggestion-item:hover { background-color: #2a2a2a; }
+        .sug-poster { width: 35px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 12px; }
+
+        /* Grid Sistemi */
+        .library-container { width: 90%; max-width: 1400px; margin: 20px auto 80px; }
+        
+        .section-header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 12px;
+        }
+        .section-title { margin: 0; font-size: 1.4rem; font-weight: 600; color: #fff; }
+        .section-title span { color: var(--brand); }
+        
+        .movie-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 25px; 
+        }
+        
+        /* Kart Tasarımı */
+        .movie-card { 
+            position: relative; border-radius: 12px; overflow: hidden; 
+            text-decoration: none; transition: all 0.3s ease;
+            background: var(--bg-card);
+        }
+        
+        .poster-container { width: 100%; aspect-ratio: 2/3; position: relative; }
+        .movie-poster { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: 0.4s; }
+        
+        .card-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 40px 12px 12px;
+            background: linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0) 100%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        
+        .movie-title { font-weight: 600; color: white; font-size: 0.95rem; margin-bottom: 4px; line-height: 1.2; }
+        .movie-meta { color: var(--brand); font-size: 0.8rem; font-weight: 600; }
+        
+        .empty-state { 
+            grid-column: 1 / -1; text-align: center; padding: 80px 20px; 
+            border: 2px dashed #222; border-radius: 20px; color: #444; 
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Mobil Uyumluluk Ayarları */
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 0; }
+            .brand-box { font-size: 1.3rem; }
+            .search-container h1 { font-size: 1.8rem; margin-bottom: 15px; }
+            .search-input { padding: 15px; font-size: 1rem; }
+            
+            .movie-grid { 
+                grid-template-columns: repeat(2, 1fr); /* Yan yana iki kart */
+                gap: 12px; 
+            }
+            
+            .movie-card:hover { transform: none; } /* Mobilde hover efektini iptal et */
+            .movie-poster { filter: brightness(1); } /* Mobilde her zaman parlak kalsın */
+            
+            .section-title { font-size: 1.2rem; }
+            .movie-title { font-size: 0.85rem; }
+        }
+
+        @media (max-width: 480px) {
+            .search-container { width: 95%; }
+            .movie-grid { gap: 10px; }
+        }
     </style>
 </head>
 <body>
+    
+    <div class="hero-section">
+        <nav class="navbar">
+            <a href="/" class="brand-box"><i class="fa-solid fa-play"></i> Episodize</a>
+            <div style="font-size: 1.1rem; color:rgba(255,255,255,0.5);"><i class="fa-regular fa-user"></i></div>
+        </nav>
 
-    <nav class="navbar">
-        <div class="nav-content">
-            <a href="/" class="brand-box">
-                <i class="fa-solid fa-layer-group"></i> Episodize
+        <div class="search-container">
+            <h1>Ne izlemek istersin?</h1>
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass" style="color:#444; padding: 0 0 0 20px; display: flex; align-items: center;"></i>
+                <input type="text" id="imdbId" class="search-input" placeholder="Film, dizi ara..." autocomplete="off">
+            </div>
+            <div id="suggestions" class="suggestions-box"></div>
+        </div>
+    </div>
+
+    <div class="library-container">
+        <div class="section-header">
+            <h2 class="section-title">Film Önerisi<span>.</span></h2>
+            <div style="font-size:0.75rem; color:#555; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                {{ movies|length }} SONUÇ
+            </div>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <a href="/{{ movie.slug }}/" class="movie-card">
+                <div class="poster-container">
+                    <img src="{{ movie.movie_info.poster|default:'https://via.placeholder.com/300x450' }}" class="movie-poster" alt="{{ movie.title }}">
+                    <div class="card-overlay">
+                        <div class="movie-title">{{ movie.title }}</div>
+                        <div class="movie-meta">{{ movie.movie_info.year }}</div>
+                    </div>
+                </div>
             </a>
-            
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <input type="text" id="imdbId" class="search-input" placeholder="Search movies (e.g. Matrix, Dune)..." autocomplete="off">
-                    <button onclick="analyze()" id="btnSubmit" class="search-btn">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
-                <div id="suggestions" class="suggestions-box"></div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-film" style="font-size: 2.5rem; margin-bottom: 15px; opacity: 0.2;"></i>
+                <div style="font-size: 1rem;">Henüz bir öneri yok.</div>
             </div>
+            {% endfor %}
         </div>
-    </nav>
-
-    <div class="main-container">
-
-        <div id="hero-section">
-            <div class="hero-icon"><i class="fa-solid fa-film"></i></div>
-            <h1 class="hero-title">Too long to watch?</h1>
-            <p class="hero-subtitle">
-                Episodize uses advanced AI to intelligently split movies into 
-                binge-worthy episodes based on narrative arcs.
-            </p>
-        </div>
-        
-        <div id="loader">
-            <i class="fa-solid fa-circle-notch spinner"></i>
-            <div class="loading-text" id="loading-msg">Connecting to satellite...</div>
-        </div>
-
-        <div id="error-area"></div>
-
-        <div id="result-card" class="result-layout">
-            
-            <div class="movie-header">
-                <div class="header-left">
-                    <h1 id="movie-title">Movie Title</h1>
-                    <div class="header-meta">
-                        <span id="year">2024</span>
-                        <span>•</span>
-                        <span id="runtime">Movie</span>
-                    </div>
-                </div>
-                <div class="header-right">
-                    <div class="rating-title">IMDb RATING</div>
-                    <div class="rating-box">
-                        <i class="fa-solid fa-star star-icon"></i>
-                        <div>
-                            <div class="rating-val"><span id="rating">8.5</span><span class="rating-max">/10</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-body">
-                <div class="poster-wrapper">
-                    <div class="poster-ribbon">
-                        <div class="ribbon-content"><i class="fa-solid fa-plus" style="color:white"></i></div>
-                    </div>
-                    <img id="poster-img" class="main-poster" src="" alt="Poster">
-                </div>
-
-                <div class="info-wrapper">
-                    <div id="genre-container" class="genre-chips"></div>
-                    
-                    <p id="movie-plot" class="plot">Loading plot...</p>
-
-                    <div class="episodes-section">
-                        <div class="section-header">
-                            <div class="yellow-bar"></div>
-                            <div class="section-title">AI Episode Guide</div>
-                        </div>
-                        
-                        <div id="ep-list" class="ep-list"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
         const input = document.getElementById("imdbId");
         const suggestionsBox = document.getElementById("suggestions");
-        const heroSection = document.getElementById("hero-section");
-        const loader = document.getElementById("loader");
-        const loadingMsg = document.getElementById("loading-msg");
 
-        // --- Yükleme Mesajları Döngüsü ---
-        const loadingMessages = [
-            "Finding subtitles in the cloud...",
-            "Downloading movie script...",
-            "AI is watching the movie (fast forward)...",
-            "Analyzing plot twists...",
-            "Detecting natural scene breaks...",
-            "Cutting episodes...",
-            "Finalizing the series..."
-        ];
-        let msgInterval;
-
-        function startLoadingAnim() {
-            let i = 0;
-            loadingMsg.innerText = loadingMessages[0];
-            msgInterval = setInterval(() => {
-                i = (i + 1) % loadingMessages.length;
-                loadingMsg.innerText = loadingMessages[i];
-            }, 1200); // Her 1.2 saniyede bir mesaj değişir
-        }
-
-        function stopLoadingAnim() {
-            clearInterval(msgInterval);
-        }
-
-        // --- AUTOCOMPLETE ---
         function debounce(func, timeout = 300){
             let timer;
             return (...args) => {
@@ -451,112 +233,27 @@
                 if (data.results && data.results.length > 0) {
                     suggestionsBox.innerHTML = '';
                     data.results.forEach(movie => {
-                        const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/35x50';
+                        const poster = (movie.Poster && movie.Poster !== 'N/A') ? movie.Poster : 'https://via.placeholder.com/40x56';
                         suggestionsBox.innerHTML += `
-                            <div class="suggestion-item" onclick="selectMovie('${movie.imdbID}')">
+                            <a href="/open/${movie.imdbID}/" class="suggestion-item">
                                 <img src="${poster}" class="sug-poster">
                                 <div>
-                                    <div class="sug-title">${movie.Title}</div>
-                                    <div class="sug-year">${movie.Year}</div>
+                                    <div style="font-weight:600; font-size:0.95rem; color:#fff;">${movie.Title}</div>
+                                    <small style="color:var(--brand); font-size:0.8rem;">${movie.Year}</small>
                                 </div>
-                            </div>
+                            </a>
                         `;
                     });
                     suggestionsBox.style.display = 'flex';
                 } else { suggestionsBox.style.display = 'none'; }
-            } catch (e) { console.error(e); }
+            } catch (err) { console.error(err); }
         }));
 
-        function selectMovie(id) {
-            input.value = id; 
-            suggestionsBox.style.display = 'none';
-            analyze();
-        }
-
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', (e) => {
             if (!document.querySelector('.search-container').contains(e.target)) {
                 suggestionsBox.style.display = 'none';
             }
         });
-
-        input.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { suggestionsBox.style.display = 'none'; analyze(); }
-        });
-
-        // --- ANA ANALİZ ---
-        async function analyze() {
-            const query = input.value.trim();
-            const resultCard = document.getElementById('result-card');
-            const errorArea = document.getElementById('error-area');
-
-            if (!query) return;
-
-            // UI Durumu Değiştir
-            heroSection.style.display = 'none'; // Hero'yu gizle
-            resultCard.style.display = 'none';
-            errorArea.style.display = 'none';
-            loader.style.display = 'block';
-            startLoadingAnim();
-
-            try {
-                const response = await fetch(`/analyze/?imdb_id=${encodeURIComponent(query)}`);
-                const data = await response.json();
-
-                stopLoadingAnim();
-
-                if (!response.ok || data.error) throw new Error(data.error || "Server Error");
-
-                // UI Doldur
-                if (data.movie_info) {
-                    const info = data.movie_info;
-                    document.getElementById('movie-title').innerText = info.title;
-                    document.getElementById('year').innerText = info.year;
-                    document.getElementById('rating').innerText = info.imdb_rating;
-                    document.getElementById('movie-plot').innerText = info.plot;
-                    document.getElementById('poster-img').src = info.poster !== 'N/A' ? info.poster : 'https://via.placeholder.com/300x450';
-                    
-                    // Genre
-                    const genres = info.genre.split(', ');
-                    const genreContainer = document.getElementById('genre-container');
-                    genreContainer.innerHTML = '';
-                    genres.forEach(g => {
-                        genreContainer.innerHTML += `<span class="chip">${g}</span>`;
-                    });
-                    
-                    input.value = info.title;
-                }
-
-                // Bölümleri Doldur
-                const epList = document.getElementById('ep-list');
-                epList.innerHTML = '';
-                
-                data.episodes.forEach((ep, index) => {
-                    const cleanTitle = ep.title.replace(/^(Bölüm|Episode)\s*\d+[:\.]?\s*/i, '');
-                    epList.innerHTML += `
-                        <div class="ep-card">
-                            <div class="ep-number-box">${ep.episode || index + 1}</div>
-                            <div class="ep-info">
-                                <div class="ep-title">${cleanTitle}</div>
-                                <div class="ep-time">
-                                    <i class="fa-regular fa-clock"></i> ${ep.start} - ${ep.end}
-                                </div>
-                            </div>
-                            <i class="fa-regular fa-circle-play ep-action"></i>
-                        </div>
-                    `;
-                });
-
-                loader.style.display = 'none';
-                resultCard.style.display = 'block';
-
-            } catch (err) {
-                stopLoadingAnim();
-                loader.style.display = 'none';
-                errorArea.style.display = 'block';
-                errorArea.innerHTML = `<strong>Error:</strong> ${err.message}`;
-                // Hata durumunda Hero geri gelsin mi? Bence gelmesin, hata görülsün.
-            }
-        }
     </script>
 </body>
 </html>
