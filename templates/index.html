@@ -15,34 +15,28 @@
             --text-muted: #b3b3b3;
         }
 
-        /* Özel Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        /* Zarif Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--brand); }
 
         body { 
-            margin: 0; 
-            font-family: 'Outfit', sans-serif; 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            min-height: 100vh;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-body); color: var(--text-main); 
+            min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Hero & Navbar Alanı */
+        /* Hero Alanı */
         .hero-section {
             width: 100%;
             background: radial-gradient(circle at 50% -20%, #2a2a2a 0%, var(--bg-body) 80%);
-            padding-bottom: 40px;
-            position: relative;
+            padding-bottom: 60px;
         }
 
         .navbar { 
             width: 90%; max-width: 1400px; margin: 0 auto;
-            padding: 20px 0; 
-            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 0; display: flex; justify-content: space-between; align-items: center; 
         }
         
         .brand-box { 
@@ -50,117 +44,90 @@
             text-decoration: none; display: flex; align-items: center; gap: 8px; 
             letter-spacing: -1px; text-transform: uppercase;
         }
-        
-        .search-container { 
-            width: 90%; max-width: 800px; margin: 40px auto 0; 
-            position: relative; z-index: 10;
-        }
 
-        .search-container h1 {
-            text-align: center; font-weight: 200; margin-bottom: 25px; 
-            font-size: 2.5rem; letter-spacing: -1px;
-        }
+        .search-container { width: 90%; max-width: 850px; margin: 60px auto 0; position: relative; z-index: 10; }
+        .mission-text { text-align: center; margin-bottom: 40px; }
+        .mission-text h1 { font-weight: 800; margin-bottom: 20px; font-size: 3.5rem; letter-spacing: -2px; line-height: 1; }
+        .mission-text h1 span { color: var(--brand); }
+        .mission-text p { font-size: 1.2rem; color: var(--text-muted); line-height: 1.6; max-width: 700px; margin: 0 auto; }
         
         .search-wrapper { 
-            display: flex; background: rgba(255,255,255,0.05); 
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 16px; overflow: hidden; 
-            transition: all 0.3s ease;
+            display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px); border-radius: 20px; overflow: hidden; margin-top: 30px;
         }
+        .search-input { flex: 1; padding: 22px 25px; border: none; outline: none; background: transparent; font-size: 1.2rem; color: white; font-family: inherit; }
         
-        .search-wrapper:focus-within { 
-            background: rgba(0,0,0,0.5);
-            border-color: var(--brand);
-            box-shadow: 0 0 30px rgba(245, 197, 24, 0.15);
-        }
-        
-        .search-input { 
-            flex: 1; padding: 18px 20px; border: none; outline: none; 
-            background: transparent; font-size: 1.1rem; color: white; 
-            font-family: inherit; width: 100%;
-        }
-        .search-input::placeholder { color: #666; }
-
-        /* Öneriler */
-        .suggestions-box { 
-            position: absolute; top: 110%; left: 0; width: 100%; 
-            background: #1f1f1f; border: 1px solid #333; z-index: 100; 
-            display: none; flex-direction: column; border-radius: 12px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow-y: auto;
-            max-height: 350px;
-        }
-        .suggestion-item { 
-            display: flex; align-items: center; padding: 12px 15px; 
-            border-bottom: 1px solid #2a2a2a; cursor: pointer; color: white; 
-            text-decoration: none; transition: background 0.2s; 
-        }
-        .suggestion-item:hover { background-color: #2a2a2a; }
+        .suggestions-box { position: absolute; top: 110%; left: 0; width: 100%; background: #1f1f1f; border: 1px solid #333; z-index: 100; display: none; flex-direction: column; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); max-height: 350px; overflow-y: auto; }
+        .suggestion-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #2a2a2a; cursor: pointer; color: white; text-decoration: none; }
         .sug-poster { width: 35px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 12px; }
 
-        /* Grid Sistemi */
-        .library-container { width: 90%; max-width: 1400px; margin: 20px auto 80px; }
+        /* --- CAROUSEL (KAYDIRMA ÖZELLİĞİ EKLENDİ) --- */
+        .library-container { width: 90%; max-width: 1400px; margin: 40px auto 80px; }
         
         .section-header { 
-            display: flex; align-items: center; justify-content: space-between; 
-            margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 12px;
+            display: flex; align-items: center; margin-bottom: 25px; 
+            border-left: 4px solid var(--brand); padding-left: 15px;
         }
-        .section-title { margin: 0; font-size: 1.4rem; font-weight: 600; color: #fff; }
-        .section-title span { color: var(--brand); }
-        
-        .movie-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 25px; 
+        .section-title { margin: 0; font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+
+        .carousel-outer { 
+            position: relative; width: 100%; margin-bottom: 50px; 
+            cursor: grab; /* Mouse ile çekilebilir olduğunu belirtir */
         }
+        .carousel-outer:active { cursor: grabbing; }
         
-        /* Kart Tasarımı */
-        .movie-card { 
-            position: relative; border-radius: 12px; overflow: hidden; 
-            text-decoration: none; transition: all 0.3s ease;
-            background: var(--bg-card);
+        .carousel-wrapper {
+            display: flex; gap: 20px; overflow-x: scroll; /* Kaydırmayı zorunlu yapıyoruz */
+            padding: 10px 5px 25px; 
+            scroll-snap-type: x mandatory; /* Kartların ortada durmasını sağlar */
+            -webkit-overflow-scrolling: touch; /* iOS için akıcılık */
         }
-        
+        /* Scrollbar'ı çok ince yapıyoruz ki hem işlevsel olsun hem göze batmasın */
+        .carousel-wrapper::-webkit-scrollbar { height: 4px; }
+        .carousel-wrapper::-webkit-scrollbar-thumb { background: #333; }
+
+        .featured-card {
+            flex: 0 0 350px; height: 200px; background: var(--bg-card);
+            border-radius: 20px; position: relative; overflow: hidden;
+            text-decoration: none; scroll-snap-align: start;
+            transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.05);
+            user-select: none; /* Metin seçimini engeller, sürüklemeyi kolaylaştırır */
+        }
+        .featured-card:hover { transform: translateY(-5px); border-color: var(--brand); }
+
+        .featured-img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: transform 0.6s ease; filter: brightness(0.6);
+            pointer-events: none; /* Resme tıklamayı engeller sürükleme için */
+        }
+        .featured-card:hover .featured-img { transform: scale(1.1); filter: brightness(0.8); }
+
+        .featured-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0) 70%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+        }
+        .featured-info h3 { margin: 0; font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1.2; }
+        .featured-tag { 
+            display: inline-block; background: var(--brand); color: #000; 
+            font-size: 0.7rem; font-weight: 900; padding: 4px 10px; 
+            border-radius: 6px; margin-bottom: 8px; text-transform: uppercase;
+        }
+
+        /* Grid */
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
+        .movie-card { position: relative; border-radius: 16px; overflow: hidden; text-decoration: none; transition: 0.3s; background: var(--bg-card); }
+        .movie-card:hover { transform: translateY(-8px); }
         .poster-container { width: 100%; aspect-ratio: 2/3; position: relative; }
-        .movie-poster { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: 0.4s; }
-        
-        .card-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 40px 12px 12px;
-            background: linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0) 100%);
-            display: flex; flex-direction: column; justify-content: flex-end;
-        }
-        
-        .movie-title { font-weight: 600; color: white; font-size: 0.95rem; margin-bottom: 4px; line-height: 1.2; }
-        .movie-meta { color: var(--brand); font-size: 0.8rem; font-weight: 600; }
-        
-        .empty-state { 
-            grid-column: 1 / -1; text-align: center; padding: 80px 20px; 
-            border: 2px dashed #222; border-radius: 20px; color: #444; 
-        }
+        .movie-poster { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
+        .card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 15px 15px; background: linear-gradient(to top, #121212 0%, transparent 100%); }
+        .movie-title { font-weight: 600; color: white; font-size: 1rem; margin-bottom: 4px; }
+        .movie-meta { color: var(--brand); font-size: 0.85rem; font-weight: 800; }
 
-        /* Mobil Uyumluluk Ayarları */
         @media (max-width: 768px) {
-            .navbar { padding: 15px 0; }
-            .brand-box { font-size: 1.3rem; }
-            .search-container h1 { font-size: 1.8rem; margin-bottom: 15px; }
-            .search-input { padding: 15px; font-size: 1rem; }
-            
-            .movie-grid { 
-                grid-template-columns: repeat(2, 1fr); /* Yan yana iki kart */
-                gap: 12px; 
-            }
-            
-            .movie-card:hover { transform: none; } /* Mobilde hover efektini iptal et */
-            .movie-poster { filter: brightness(1); } /* Mobilde her zaman parlak kalsın */
-            
-            .section-title { font-size: 1.2rem; }
-            .movie-title { font-size: 0.85rem; }
-        }
-
-        @media (max-width: 480px) {
-            .search-container { width: 95%; }
-            .movie-grid { gap: 10px; }
+            .mission-text h1 { font-size: 2.2rem; }
+            .featured-card { flex: 0 0 280px; height: 160px; }
+            .movie-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
         }
     </style>
 </head>
@@ -173,21 +140,44 @@
         </nav>
 
         <div class="search-container">
-            <h1>Ne izlemek istersin?</h1>
+            <div class="mission-text">
+                <h1>Odak süremiz bitti<span>.</span></h1>
+                <p>Tek oturuşta 3 saatlik filme vaktin yok mu? Episodize, filmleri 20 dakikalık bölümlere ayırarak favori hikayeni bir mini-diziye dönüştürür.</p>
+            </div>
+            
             <div class="search-wrapper">
-                <i class="fa-solid fa-magnifying-glass" style="color:#444; padding: 0 0 0 20px; display: flex; align-items: center;"></i>
-                <input type="text" id="imdbId" class="search-input" placeholder="Film, dizi ara..." autocomplete="off">
+                <i class="fa-solid fa-magnifying-glass" style="color:#444; padding: 0 0 25px; display: flex; align-items: center; font-size: 1.2rem;"></i>
+                <input type="text" id="imdbId" class="search-input" placeholder="Bir film arat ve dizileştir..." autocomplete="off">
             </div>
             <div id="suggestions" class="suggestions-box"></div>
         </div>
     </div>
 
     <div class="library-container">
+        
+        {% if movies %}
         <div class="section-header">
-            <h2 class="section-title">Film Önerisi<span>.</span></h2>
-            <div style="font-size:0.75rem; color:#555; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                {{ movies|length }} SONUÇ
+            <h2 class="section-title">Hızlıca Göz At</h2>
+        </div>
+        <div class="carousel-outer" id="carouselOuter">
+            <div class="carousel-wrapper" id="carouselWrapper">
+                {% for movie in movies|slice:":10" %}
+                <a href="/{{ movie.slug }}/" class="featured-card">
+                    <img src="{{ movie.movie_info.poster|default:'https://via.placeholder.com/600x400' }}" class="featured-img" alt="{{ movie.title }}">
+                    <div class="featured-overlay">
+                        <div class="featured-info">
+                            <span class="featured-tag">{{ movie.episode_data|length|default:"AI" }} BÖLÜM</span>
+                            <h3>{{ movie.title }}</h3>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
             </div>
+        </div>
+        {% endif %}
+
+        <div class="section-header">
+            <h2 class="section-title">Kitaplık Keşfet</h2>
         </div>
 
         <div class="movie-grid">
@@ -202,15 +192,13 @@
                 </div>
             </a>
             {% empty %}
-            <div class="empty-state">
-                <i class="fa-solid fa-film" style="font-size: 2.5rem; margin-bottom: 15px; opacity: 0.2;"></i>
-                <div style="font-size: 1rem;">Henüz bir öneri yok.</div>
-            </div>
+            <div class="empty-state" style="text-align: center; padding: 50px; opacity: 0.5;">Henüz hiç film dizileştirilmedi.</div>
             {% endfor %}
         </div>
     </div>
 
     <script>
+        // --- ARAMA VE AUTOCOMPLETE ---
         const input = document.getElementById("imdbId");
         const suggestionsBox = document.getElementById("suggestions");
 
@@ -225,11 +213,9 @@
         input.addEventListener("input", debounce(async () => {
             const query = input.value.trim();
             if (query.length < 3) { suggestionsBox.style.display = 'none'; return; }
-
             try {
                 const response = await fetch(`/autocomplete/?q=${encodeURIComponent(query)}`);
                 const data = await response.json();
-
                 if (data.results && data.results.length > 0) {
                     suggestionsBox.innerHTML = '';
                     data.results.forEach(movie => {
@@ -237,17 +223,40 @@
                         suggestionsBox.innerHTML += `
                             <a href="/open/${movie.imdbID}/" class="suggestion-item">
                                 <img src="${poster}" class="sug-poster">
-                                <div>
-                                    <div style="font-weight:600; font-size:0.95rem; color:#fff;">${movie.Title}</div>
-                                    <small style="color:var(--brand); font-size:0.8rem;">${movie.Year}</small>
-                                </div>
-                            </a>
-                        `;
+                                <div><div style="font-weight:600; color:#fff;">${movie.Title}</div><small style="color:var(--brand);">${movie.Year}</small></div>
+                            </a>`;
                     });
                     suggestionsBox.style.display = 'flex';
                 } else { suggestionsBox.style.display = 'none'; }
             } catch (err) { console.error(err); }
         }));
+
+        // --- CAROUSEL DRAG-TO-SCROLL (MOUSE İLE TUTUP ÇEKME) ---
+        const slider = document.getElementById('carouselWrapper');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.scrollSnapType = 'none'; // Sürüklerken snap'i kapat
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.scrollSnapType = 'x mandatory'; // Bırakınca snap'i geri aç
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Kaydırma hızı çarpanı
+            slider.scrollLeft = scrollLeft - walk;
+        });
 
         document.addEventListener('click', (e) => {
             if (!document.querySelector('.search-container').contains(e.target)) {

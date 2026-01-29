@@ -12,8 +12,9 @@ from .services import AIService, SubtitleService, MovieInfoService
 TEST_MODE = False 
 
 def index(request):
-    """Ana Sayfa: Veritabanındaki filmleri listeler."""
-    movies = Movie.objects.exclude(title__isnull=True).order_by('-created_at')
+    # random.sample veya order_by('?') kullanılabilir
+    # Not: order_by('?') büyük veritabanlarında yavaştır ama başlangıç için harikadır.
+    movies = Movie.objects.exclude(title__isnull=True).order_by('?')[:12]
     return render(request, 'index.html', {'movies': movies})
 
 def open_movie_by_id(request, imdb_id):
